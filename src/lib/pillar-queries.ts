@@ -77,8 +77,9 @@ export function useDeletePillar() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (pillar: PillarRow) => {
-      await supabase.from("notes").update({ pillar: null }).eq("pillar", pillar.slug);
-      await supabase.from("threads").update({ pillar: null }).eq("pillar", pillar.slug);
+      const pillarSlug = pillar.slug as Database["public"]["Enums"]["pillar"];
+      await supabase.from("notes").update({ pillar: null }).eq("pillar", pillarSlug);
+      await supabase.from("threads").update({ pillar: null }).eq("pillar", pillarSlug);
       const { error } = await supabase.from("pillars").delete().eq("id", pillar.id);
       if (error) throw error;
     },

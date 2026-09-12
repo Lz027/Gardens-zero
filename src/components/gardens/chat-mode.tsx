@@ -16,6 +16,7 @@ import { useWallpaper } from "@/lib/wallpaper";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import type { Database } from "@/integrations/supabase/types";
 
 function dayLabel(iso: string) {
   const d = new Date(iso);
@@ -55,7 +56,8 @@ export function ChatMode() {
 
   async function newChat() {
     const thread = await createThread.mutateAsync({
-      pillar: pillarFilter === "all" ? null : pillarFilter,
+      pillar:
+        pillarFilter === "all" ? null : (pillarFilter as Database["public"]["Enums"]["pillar"]),
     });
     if (thread) setActiveId(thread.id);
   }
@@ -238,7 +240,7 @@ function Conversation({ thread, onBack }: { thread: Thread; onBack: () => void }
           onChange={(e) =>
             updateThread.mutate({
               id: thread.id,
-              pillar: e.target.value || null,
+              pillar: (e.target.value || null) as Database["public"]["Enums"]["pillar"] | null,
             })
           }
           aria-label="File this chat under a pillar"

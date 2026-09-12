@@ -32,7 +32,7 @@ export function useSettings() {
   });
 }
 
-export function usePillarEntries(pillar?: string) {
+export function usePillarEntries(pillar?: Database["public"]["Enums"]["pillar"]) {
   return useQuery({
     queryKey: ["pillar_entries", pillar ?? "all"],
     queryFn: () => {

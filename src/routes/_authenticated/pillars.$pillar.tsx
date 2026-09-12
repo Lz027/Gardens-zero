@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Info, MessageSquare, Settings2, StickyNote, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { usePillarEntries, useInvalidate, currentUserId } from "@/lib/queries";
 import { useCreateNote, useNotes, useUpdateNote } from "@/lib/desk-queries";
 import { useCreateThread, useThreads, useUpdateThread } from "@/lib/chat-queries";
@@ -60,7 +61,8 @@ function PillarPage() {
 function PillarBody({ row }: { row: PillarRow }) {
   const Icon = iconFor(row.icon);
   const navigate = useNavigate();
-  const { data: entries } = usePillarEntries(row.slug);
+  const pillarSlug = row.slug as Database["public"]["Enums"]["pillar"];
+  const { data: entries } = usePillarEntries(pillarSlug);
   const { data: notes } = useNotes();
   const { data: threads } = useThreads();
   const createThread = useCreateThread();
@@ -84,15 +86,21 @@ function PillarBody({ row }: { row: PillarRow }) {
     if (!text) return;
     const userId = await currentUserId();
     if (!userId) return;
-    await supabase
-      .from("pillar_entries")
-      .insert({ user_id: userId, pillar: row.slug, kind, content: text });
+    await supabase.from("pillar_entries").insert({
+      user_id: userId,
+      pillar: row.slug as Database["public"]["Enums"]["pillar"],
+      kind,
+      content: text,
+    });
     setContent("");
     invalidate(["pillar_entries"]);
   }
 
   async function newNoteHere() {
-    await createNote.mutateAsync({ pillar: row.slug, title: `${row.label} note` });
+    await createNote.mutateAsync({
+      pillar: row.slug as Database["public"]["Enums"]["pillar"],
+      title: `${row.label} note`,
+    });
     navigate({ to: "/home" });
   }
 
@@ -211,7 +219,7 @@ function PillarBody({ row }: { row: PillarRow }) {
             size="sm"
             variant="outline"
             onClick={async () => {
-              await createThread.mutateAsync({ pillar: row.slug, title: `${row.label} chat` });
+              await createThread.mutateAsync({ pillar: pillarSlug, title: `${row.label} chat` });
               navigate({ to: "/home" });
             }}
           >

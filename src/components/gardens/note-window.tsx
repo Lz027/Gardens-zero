@@ -3,6 +3,7 @@ import { Maximize2, Minus, Minimize2, X } from "lucide-react";
 import { useDeleteNote, useUpdateNote, type Note } from "@/lib/desk-queries";
 import { usePillars } from "@/lib/pillar-queries";
 import { cn } from "@/lib/utils";
+import type { Database } from "@/integrations/supabase/types";
 
 type Geometry = { pos_x: number; pos_y: number; width: number; height: number };
 
@@ -187,7 +188,8 @@ export function NoteWindow({
           onChange={(e) =>
             update.mutate({
               id: note.id,
-              pillar: e.target.value === "" ? null : e.target.value,
+              pillar: (e.target.value === "" ? null : e.target.value) as
+                Database["public"]["Enums"]["pillar"] | null,
             })
           }
           className="h-6 rounded border border-input bg-card px-1 text-[11px] text-foreground"

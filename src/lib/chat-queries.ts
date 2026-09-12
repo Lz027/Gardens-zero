@@ -46,7 +46,9 @@ export function useMessages(threadId: string | null) {
 export function useCreateThread() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (input: { title?: string; pillar?: string | null } = {}) => {
+    mutationFn: async (
+      input: { title?: string; pillar?: Database["public"]["Enums"]["pillar"] | null } = {},
+    ) => {
       const user_id = await userId();
       const rows = await unwrap<Thread[]>(
         supabase
