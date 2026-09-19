@@ -19,7 +19,7 @@ process.env["SUPABASE_PUBLISHABLE_KEY"] = SUPABASE_PUBLISHABLE_KEY;
 process.env["SUPABASE_PROJECT_ID"] = SUPABASE_PROJECT_ID;
 
 // Deployment adapter (Netlify, etc.) is only wired in when a preset is requested,
-// so the default Lovable build keeps its plain dist/client + dist/server output.
+// so the default build keeps its plain dist/client + dist/server output.
 const deployPreset = process.env["NITRO_PRESET"] || (process.env["NETLIFY"] ? "netlify" : "");
 
 export default defineConfig({

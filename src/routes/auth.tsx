@@ -2,7 +2,6 @@ import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 
 import { GardensLogo } from "@/components/gardens/logo";
 import { Button } from "@/components/ui/button";
@@ -99,32 +98,9 @@ function AuthPage() {
     setBusy(true);
     try {
       sessionStorage.setItem("gz:redirect", target);
-
-      // The managed sign-in broker lives on Lovable-hosted origins. When it is
-      // not reachable (self-hosted / Netlify / local), fall back to the direct
-      // provider flow so Google sign-in keeps working everywhere.
-      let brokerAvailable = true;
-      try {
-        const probe = await fetch("/~oauth/initiate", { method: "HEAD", redirect: "manual" });
-        brokerAvailable = probe.status !== 404;
-      } catch {
-        brokerAvailable = false;
-      }
-
-      if (brokerAvailable) {
-        const result = await lovable.auth.signInWithOAuth("google", {
-          redirect_uri: window.location.origin,
-        });
-        if (result.redirected) return;
-        if (!result.error) {
-          navigate({ to: target, replace: true });
-          return;
-        }
-      }
-
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
-        options: { redirectTo: window.location.origin },
+        options: { redirectTo: `${window.location.origin}${target}` },
       });
       if (error) throw error;
     } catch (error) {

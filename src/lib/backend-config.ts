@@ -1,5 +1,5 @@
 /**
- * Backend (Lovable Cloud / Supabase) connection details.
+ * Gardens Zero backend (Supabase) connection details.
  *
  * These are baked into the build on purpose so the app works when hosted
  * anywhere (Netlify, static hosts, self-hosted) without configuring any
