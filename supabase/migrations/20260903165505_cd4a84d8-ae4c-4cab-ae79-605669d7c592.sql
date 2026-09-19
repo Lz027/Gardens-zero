@@ -1,1 +1,0 @@
-REVOKE EXECUTE ON FUNCTION public.seed_default_pillars() FROM PUBLIC, anon, authenticated;
